@@ -1,0 +1,278 @@
+ {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Poppins", sans-serif;
+}
+
+body {
+  background-color: #f9f9f9;
+  color: #333;
+  transition: background 0.4s, color 0.4s;
+  line-height: 1.6;
+}
+
+/* DARK MODE */
+body.dark-mode {
+  background: #0a1931;
+  color: #f1f1f1;
+}
+
+/* HEADER */
+header {
+  background-color: #0a1931;
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  flex-wrap: wrap;
+}
+
+.logo {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  gap: 15px;
+}
+
+nav a {
+  color: white;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+nav a:hover {
+  color: #ffd700;
+}
+
+/* THEME BUTTON */
+.theme-btn {
+  border: none;
+  background: #ffd700;
+  padding: 6px 12px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 18px;
+  transition: 0.3s;
+}
+
+.theme-btn:hover {
+  transform: scale(1.1);
+}
+
+/* SEARCH BAR */
+.search-container {
+  display: flex;
+  align-items: center;
+  background: white;
+  border-radius: 20px;
+  padding: 3px 10px;
+}
+
+.search-container input {
+  border: none;
+  outline: none;
+  padding: 5px;
+  width: 150px;
+}
+
+.search-container button {
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+/* HERO */
+.hero {
+  background: url('images/hero-bg.jpg') center/cover no-repeat;
+  height: 80vh;
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+.hero .overlay {
+  background-color: rgba(0,0,0,0.5);
+  color: white;
+  padding: 20px;
+  border-radius: 10px;
+}
+
+.hero h1 {
+  font-size: 3em;
+  animation: fadeInDown 2s;
+}
+
+.hero p {
+  margin-top: 10px;
+  animation: fadeInUp 2s;
+}
+
+.btn {
+  display: inline-block;
+  background: #ffd700;
+  color: #0a1931;
+  padding: 10px 20px;
+  border-radius: 30px;
+  text-decoration: none;
+  margin-top: 15px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  background: #ffcc00;
+  transform: scale(1.05);
+}
+
+/* SECTIONS */
+.section {
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.section h2 {
+  color: #0a1931;
+  margin-bottom: 20px;
+}
+
+body.dark-mode .section h2 {
+  color: #ffd700;
+}
+
+/* SERVICES CARDS */
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.card {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+body.dark-mode .card {
+  background: #142850;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+}
+
+/* VIDEO SECTION */
+.video-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+/* CONTACT FORM */
+.contact form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  max-width: 400px;
+  margin: 20px auto;
+}
+
+.contact input,
+.contact textarea {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+footer {
+  background: #0a1931;
+  color: white;
+  text-align: center;
+  padding: 15px;
+  margin-top: 40px;
+}
+
+/* ANIMATIONS */
+@keyframes fadeInDown {
+  from { opacity: 0; transform: translateY(-50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(50px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+Html 
+<!-- LATEST VIDEOS (Dynamic YouTube Feed) -->
+<section id="latest" class="section">
+  <h2>Latest Videos</h2>
+  <div id="video-feed" class="video-grid">
+    <p>Loading latest videos...</p>
+  </div>
+</section>
+
+<script>
+  // --- SEARCH FUNCTION ---
+  const searchBtn = document.getElementById("search-btn");
+  const searchInput = document.getElementById("search-input");
+  searchBtn.addEventListener("click", function() {
+    const query = searchInput.value.trim();
+    if (query) {
+      window.open(`https://www.google.com/search?q=site:wallytv.cm+${query}`, "_blank");
+    }
+  });
+
+  // --- DARK/LIGHT MODE ---
+  const themeToggle = document.getElementById("theme-toggle");
+  themeToggle.addEventListener("click", () => {
+    document.body.classList.toggle("dark-mode");
+    themeToggle.textContent = document.body.classList.contains("dark-mode") ? "🌙" : "🌞";
+  });
+
+  // --- BACKGROUND MUSIC ---
+  const music = document.getElementById("bg-music");
+  music.volume = 0.1;
+
+  // --- YOUTUBE LATEST VIDEOS ---
+  const apiKey = "YOUR_API_KEY";  // replace with your YouTube API key
+  const channelId = "YOUR_CHANNEL_ID";  // replace with your YouTube Channel ID
+  const videoFeed = document.getElementById("video-feed");
+
+  async function loadVideos() {
+    try {
+      const res = await fetch(
+        `https://www.googleapis.com/youtube/v3/search?key=${apiKey}&channelId=${channelId}&part=snippet,id&order=date&maxResults=6`
+      );
+      const data = await res.json();
+      videoFeed.innerHTML = ""; // clear loading text
+
+      data.items.forEach(item => {
+        if (item.id.kind === "youtube#video") {
+          const videoDiv = document.createElement("div");
+          videoDiv.classList.add("video-card");
+          videoDiv.innerHTML = `
+            <iframe width="320" height="180"
+              src="https://www.youtube.com/embed/${item.id.videoId}"
+              title="${item.snippet.title}" frameborder="0"
+              allowfullscreen></iframe>
+            <h4>${item.snippet.title}</h4>
+          `;
+          videoFeed.appendChild(videoDiv);
+        }
+      });
+    } catch (error) {
+      videoFeed.innerHTML = "<p>Unable to load videos at this time. Please check your internet connection.</p>";
+    }
+  }
+
+  loadVideos();
+</script>
